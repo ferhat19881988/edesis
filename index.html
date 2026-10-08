@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#e86524">
+  <meta name="description" content="Fenomen Eğitim Kurumları veli sonuç belgesi giriş bilgileri">
+  <title>Fenomen Veli Sonuç Portalı | v1.0</title>
+  <style>
+    /* Fenomen Veli Sonuç Portalı — görsel düzenleme; sürüm v1.0 korunmuştur. */
+    :root{
+      --orange:#e96b28;--orange-dark:#c54f15;--orange-light:#fff2e9;
+      --navy:#17243b;--muted:#79869a;--line:#e5eaf0;
+      --white:#fff;--bg:#f6f7fa;--shadow:0 16px 45px rgba(25,40,65,.07);
+      font-synthesis:none;
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%}
+    body{
+      min-height:100dvh;margin:0;color:var(--navy);
+      background:radial-gradient(ellipse 540px 310px at 50% -9%,rgba(236,114,46,.075),transparent 80%),
+                 linear-gradient(165deg,#fafafa 0%,#f4f6f9 100%);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    button,input{font:inherit}button{cursor:pointer}
+    button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #f5a36b;outline-offset:3px}
+    [hidden]{display:none!important}
+
+    /* Yönetici butonu bağımsız bir satırdadır; logo alanına taşmaz. */
+    .page{
+      width:min(100%,660px);min-height:100dvh;margin:0 auto;padding:22px 22px 20px;
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .utility-bar{display:flex;justify-content:flex-end;align-items:center;min-height:44px;margin-bottom:4px}
+    .admin-trigger{
+      width:42px;height:42px;flex:none;display:grid;place-items:center;
+      border:1px solid #e5e8ed;border-radius:13px;color:var(--orange-dark);
+      background:#fff;box-shadow:0 5px 16px rgba(22,36,59,.06);
+      transition:background .18s,color .18s,transform .18s,border-color .18s;
+    }
+    .admin-trigger:hover{background:var(--orange-light);border-color:#f2c4a8;transform:translateY(-1px)}
+    .admin-trigger svg{width:20px;height:20px}
+
+    /* Üst logo ve başlık kartın dışında, yalın ve ortalanmış. */
+    .brand{margin:0 0 22px;text-align:center;padding:0 10px;background:none;border:0;box-shadow:none}
+    .brand-logo-shell{display:flex;align-items:center;justify-content:center;margin:0 auto 9px;min-height:145px}
+    .brand-logo-shell img{
+      width:min(365px,88vw);height:160px;max-width:100%;display:block;object-fit:contain;
+      border:0;border-radius:0;background:transparent;box-shadow:none;
+    }
+    .brand h1{margin:0;color:var(--navy);font-size:clamp(30px,5.6vw,39px);font-weight:850;letter-spacing:-1.3px;line-height:1.16}
+    .brand p{max-width:465px;margin:9px auto 0;font-size:13.5px;line-height:1.6;color:#77849a}
+
+    /* Tek form kartı: hızlı taranabilen sıkı ve okunaklı düzen. */
+    .panel{
+      width:100%;padding:29px 32px 30px;background:#fff;
+      border:1px solid #eef0f4;border-radius:25px;box-shadow:var(--shadow);
+    }
+    .panel-header{display:flex;align-items:center;gap:14px;margin-bottom:23px}
+    .panel-header-icon{
+      flex:none;width:49px;height:49px;display:grid;place-items:center;
+      border:1px solid #ffe4d2;border-radius:15px;background:#fff5ed;color:var(--orange);
+    }
+    .panel-header-icon svg{width:24px;height:24px}
+    .panel-header-text{min-width:0}
+    .panel-title{margin:0 0 4px;font-size:clamp(21px,3.6vw,26px);font-weight:810;line-height:1.2;letter-spacing:-.8px}
+    .panel-description{margin:0;max-width:480px;font-size:13px;line-height:1.55;color:var(--muted)}
+    .lookup-form{display:flex;flex-direction:column;gap:16px}
+    .form-field{display:flex;flex-direction:column;gap:9px}
+    .form-field label{font-size:13px;font-weight:760;color:var(--navy)}
+    .tel-shell{
+      display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px;
+      border:1px solid #e5e9f0;border-radius:14px;background:#fafbfc;
+      transition:border-color .18s,box-shadow .18s,background .18s;
+    }
+    .tel-shell:hover{border-color:#d5dce5}
+    .tel-shell:focus-within{border-color:#ed9b69;background:#fff;box-shadow:0 0 0 4px rgba(233,107,40,.11)}
+    .tel-icon{width:19px;height:19px;flex:none;color:var(--orange)}
+    .tel-shell input{display:block;min-width:0;width:100%;outline:0;border:0;background:transparent;color:var(--navy);font-size:16px;font-weight:650;padding:0}
+    .tel-shell input::placeholder{color:#9aa6b7;font-weight:500}
+    .hint{display:block;font-size:11.5px;color:#8794a5;margin:10px 0 22px}
+
+    .btn{
+      display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:51px;
+      padding:12px 17px;border:0;border-radius:13px;font-size:14px;font-weight:760;
+      text-align:center;text-decoration:none;transition:background .18s,box-shadow .18s,transform .18s;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{color:#fff;background:linear-gradient(105deg,#f28a49 0%,#e96b28 58%,#d65a1d 100%);box-shadow:0 8px 18px rgba(222,97,31,.16)}
+    .btn-primary:hover{background:linear-gradient(105deg,#f49556 0%,#e36623 58%,#c94f14 100%);box-shadow:0 10px 23px rgba(222,97,31,.22)}
+    .btn-primary:disabled{opacity:.7;cursor:wait}
+    .btn-block{width:100%}
+    .btn-outline{color:var(--navy);background:#f7f9fb;border:1px solid #e6eaf0}
+    .btn-outline:hover{background:#eef2f6}
+    .btn-direct{color:var(--orange-dark);background:#fff9f5;border:1px solid #f1d8c8}
+    .btn-direct:hover{background:#fff0e5;box-shadow:0 5px 14px rgba(197,79,21,.07)}
+    .btn-copy{flex:none;min-height:34px;padding:7px 10px;border-radius:9px;font-size:12px;color:var(--orange-dark);background:var(--orange-light);border:1px solid #ffe5d5}
+    .btn-copy:hover{background:#ffe9db}
+    .btn-quiet{background:#f4f6f9;color:#58667b;border:1px solid #e6eaf0}
+    .btn-main-icon{width:19px;height:19px;flex:none}
+    .notice{margin:15px 0 0;padding:12px 13px;display:flex;align-items:flex-start;gap:8px;border-radius:12px;font-size:13px;line-height:1.55}
+    .notice.error{color:#a52d24;background:#fff0ee;border:1px solid #ffd1c7}
+    .notice.info{color:#315373;background:#f2f6fd;border:1px solid #dce8f8}
+    .notice.success{color:#28603a;background:#effaf3;border:1px solid #c7e8d1}
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ffffff7a;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Sorgu sonuçları ve yönetici diyaloğu mevcut davranışını korur. */
+    .results{margin-top:24px}
+    .results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .results h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.3px}
+    .count{padding:6px 10px;border-radius:999px;color:#a84d1c;background:#fff0e5;font-size:11px;font-weight:800;white-space:nowrap}
+    .student-card{overflow:hidden;margin-bottom:13px;border:1px solid #e8edf3;border-radius:17px;background:#fff;box-shadow:0 7px 18px rgba(20,34,56,.035)}
+    .student-head{display:flex;align-items:flex-start;gap:11px;padding:15px 16px;background:#fff9f5;border-bottom:1px solid #f2e7df}
+    .avatar{flex:none;display:grid;place-items:center;width:40px;height:40px;border:1px solid #f8dfcd;border-radius:11px;background:#fff;color:#b75118;font-weight:850}
+    .student-name{margin:0 0 5px;font-size:15px;font-weight:800;overflow-wrap:anywhere}
+    .student-info{font-size:12px;font-weight:570;color:#77849a}
+    .student-content{padding:15px 16px 17px}
+    .credential{margin-bottom:13px}
+    .credential-label{display:block;margin-bottom:6px;font-size:11px;font-weight:750;color:#6f7c8e}
+    .credential-value{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px 7px 11px;background:#f8fafc;border:1px solid #e9edf2;border-radius:11px}
+    .credential-value strong{min-width:0;font-size:16px;letter-spacing:.2px;overflow-wrap:anywhere}
+    .student-link{min-height:45px;margin-top:2px}
+    .student-warning{margin:0;font-size:12px;line-height:1.55;color:#ac4b16}
+    .results-note{margin:12px 6px;color:#7a8799;text-align:center;font-size:11.5px}
+
+    .footer{margin:19px auto 0;color:#96a1b0;text-align:center;font-size:10.5px;line-height:1.6;letter-spacing:.01em}
+    .footer .version{display:block;margin-top:3px;color:#a4aebc}
+    .reset-templates{min-height:42px;margin:0 0 12px;font-size:12px;color:#8b5627;background:#fffaf6;border-color:#f2d7c4}
+    .reset-templates:hover{background:#fff2e7}
+    .modal{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(14,23,39,.58);backdrop-filter:blur(4px)}
+    .modal-card{width:min(100%,420px);max-height:calc(100dvh - 32px);overflow:auto;padding:26px;border-radius:21px;background:white;box-shadow:0 28px 78px rgba(0,0,0,.26)}
+    .modal-top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:10px}
+    .modal h2{margin:0;font-size:20px;font-weight:850;letter-spacing:-.5px}
+    .modal p{margin:5px 0 20px;color:var(--muted);font-size:13px;line-height:1.6}
+    .close{display:grid;place-items:center;width:35px;height:35px;border:1px solid #e4e8ee;border-radius:11px;background:#fff;color:#77859a;font-size:19px}
+    .input-label{display:block;margin:0 0 8px;font-size:12px;font-weight:750}
+    .modal-input{width:100%;height:49px;margin-bottom:17px;padding:0 13px;border:1.5px solid #dce2ea;border-radius:12px;background:#fbfcfe;color:var(--navy);font-size:15px}
+    .modal-input:focus{border-color:var(--orange)}
+    .modal-actions{display:flex;gap:9px}.modal-actions button{flex:1}
+    .help-mini{margin-top:0!important;padding:12px;border-radius:11px;background:#f7f9fc;color:#8490a1!important;font-size:11px!important;line-height:1.65!important}
+    .switching{padding:10px;border:1px solid #ffdcbb;border-radius:11px;background:#fff9f3;color:#8b5627!important;font-size:12px!important}
+    @media(max-width:480px){
+      .page{justify-content:flex-start;padding:12px 15px 24px}
+      .utility-bar{margin-bottom:2px}
+      .brand{margin-bottom:19px;padding:0 2px}
+      .brand-logo-shell{min-height:124px;margin-bottom:7px}
+      .brand-logo-shell img{width:min(325px,88vw);height:135px}
+      .brand h1{font-size:29px;letter-spacing:-1px}
+      .brand p{max-width:335px;font-size:12.5px;margin-top:7px}
+      .panel{padding:22px 18px 23px;border-radius:21px}
+      .panel-header{gap:12px;margin-bottom:20px}
+      .panel-header-icon{width:44px;height:44px;border-radius:13px}
+      .panel-header-icon svg{width:22px;height:22px}
+      .panel-title{font-size:21px;letter-spacing:-.55px}
+      .panel-description{font-size:12px;line-height:1.5}
+      .tel-shell{min-height:55px}
+      .tel-shell input{font-size:16px}
+      .student-head{padding:14px 12px}.student-content{padding:15px 12px}
+      .credential-value strong{font-size:14px}.btn-copy{padding:7px 9px}
+      .modal-card{padding:22px 18px}
+    }
+    @media(max-width:360px){.panel-header-icon{width:40px;height:40px}.panel-title{font-size:19px}.page{padding-left:11px;padding-right:11px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="utility-bar">
+      <button class="admin-trigger" id="adminOpen" type="button" aria-label="Yönetici ayarları" title="Yönetici ayarları">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v3m0 14v3m4.93-18.05-1.5 2.6M8.57 17.45l-1.5 2.6M20.05 7.07l-2.6 1.5M6.55 15.43l-2.6 1.5M22 12h-3M5 12H2m18.05 4.93-2.6-1.5M6.55 8.57l-2.6-1.5M16.93 20.05l-1.5-2.6M8.57 6.55l-1.5-2.6"/><circle cx="12" cy="12" r="4"/></svg>
+      </button>
+    </div>
+    <header class="brand">
+      <div class="brand-logo-shell">
+        <img src="https://i.ibb.co/8L8bR92g/1.png" alt="Fenomen Eğitim Kurumları logosu" width="560" height="240">
+      </div>
+      <h1>Veli Sonuç Portalı</h1>
+      <p>Sonuç belgesi giriş bilgilerinize kolayca ulaşın.</p>
+    </header>
+    <section class="panel" aria-labelledby="formTitle">
+      <div class="panel-header">
+        <div class="panel-header-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="panel-header-text">
+          <h2 class="panel-title" id="formTitle">Öğrenci bilgilerini sorgula</h2>
+          <p class="panel-description">Kayıtlı veli telefon numaranızı girerek öğrenci giriş bilgilerine hızlıca ulaşın.</p>
+        </div>
+      </div>
+      <form id="lookupForm" class="lookup-form" novalidate>
+        <div class="form-field">
+          <label for="phoneInput">Veli Telefon Numarası</label>
+          <div class="tel-shell">
+            <svg class="tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 18h4"/></svg>
+            <input id="phoneInput" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="Telefon numaranız" maxlength="22" required>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="lookupBtn"><svg class="btn-main-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Bilgilerimi Getir</span></button>
+        <a class="btn btn-direct btn-block" id="directEdesisLink" href="https://fenomencocukkulubu.edesis.com/account/login" target="_blank" rel="noopener noreferrer"><svg class="btn-main-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6"></path></svg><span>Doğrudan Edesis'e Bağlan</span></a>
+      </form>
+      <div class="notice error" role="alert" id="lookupError" hidden></div>
+      <div class="notice info" role="status" id="lookupStatus" hidden></div>
+      <section class="results" id="results" hidden aria-live="polite">
+        <div class="results-head"><h2>Eşleşen Öğrenciler</h2><span class="count" id="studentCount"></span></div>
+        <div id="studentList"></div>
+        <p class="results-note">Kopyaladığınız bilgilerle Edesis sonuç sistemine giriş yapabilirsiniz.</p>
+      </section>
+    </section>
+    <footer class="footer">Tasarım ve Kodlama: Ferhat Karagöz <span class="version">Veli Sonuç Portalı · v1.0</span></footer>
+  </main>
+  <section class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-top"><h2 id="modalTitle">Yönetici Girişi</h2><button class="close" type="button" id="adminClose" aria-label="Kapat">×</button></div>
+      <form id="pinForm">
+        <p>Yönetici ayarlarını açmak için PIN kodunu girin.</p>
+        <label class="input-label" for="pinInput">Yönetici PIN</label>
+        <input class="modal-input" id="pinInput" type="password" inputmode="numeric" autocomplete="off" maxlength="32" required placeholder="Yönetici PIN kodu">
+        <div class="notice error" role="alert" id="pinError" hidden></div>
+        <div class="modal-actions" style="margin-top:17px"><button class="btn btn-quiet" type="button" data-cancel>Vazgeç</button><button class="btn btn-primary" type="submit" id="pinSubmit">Giriş Yap</button></div>
+      </form>
+      <form id="adminForm" hidden>
+        <p>Giriş bilgisi oluşturma şablonlarını düzenleyin. <strong>{no}</strong> öğrenci numarasıdır.</p>
+        <label class="input-label" for="userTemplate">Kullanıcı Adı Şablonu</label>
+        <input class="modal-input" id="userTemplate" type="text" spellcheck="false" maxlength="80" value="fenomen{no}" required>
+        <label class="input-label" for="passTemplate">Şifre Şablonu</label>
+        <input class="modal-input" id="passTemplate" type="text" spellcheck="false" maxlength="80" value="00{no}" required>
+        <p class="help-mini">Örnek: Öğrenci numarası 1234 ise varsayılan kurallarla kullanıcı adı <strong>fenomen1234</strong>, şifre <strong>001234</strong> olur.</p>
+        <p class="switching" id="saveExplanation">Kaydet: Şablonları veritabanında yalnızca <strong>studentListManager/v5/portalSettings</strong> yoluna yazar. Öğrenci kayıtlarını değiştirmez.</p>
+        <div class="notice error" id="saveError" role="alert" hidden></div>
+        <div class="notice success" id="saveSuccess" role="status" hidden></div>
+        <button class="btn btn-outline btn-block reset-templates" type="button" id="resetTemplatesBtn">↺ Başlangıç Ayarlarına Dön</button>
+        <div class="modal-actions"><button class="btn btn-quiet" type="button" data-cancel>Vazgeç</button><button class="btn btn-primary" type="submit" id="saveBtn">Kaydet</button></div>
+      </form>
+    </div>
+  </section>
+  <script type="module">
+    /* Fenomen Veli Sonuç Portalı — v1.0
+       Kaynak öğrenci uygulaması: index (1).html
+       Var olan kayıt yolu: studentListManager/v5/snapshot (yalnızca GET)
+       Bu uygulamanın ayar yolu: studentListManager/v5/portalSettings (yalnızca admin modalından SET)
+       NOT: PIN hash'i istemci tarafında yetkilendirme yerine geçmez.
+       Firebase RTDB .read/.write true kuralları GERÇEK öğrenciler için güvensizdir. */
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+    import { getDatabase,ref,get,set } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+
+    const APP_VERSION='v1.0';
+    const firebaseConfig={
+      apiKey:'AIzaSyAIzu6aNQstwQCdMWODyIwiaVVBm63OeGw',
+      authDomain:'odevfeno.firebaseapp.com',
+      databaseURL:'https://odevfeno-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId:'odevfeno',
+      storageBucket:'odevfeno.firebasestorage.app',
+      messagingSenderId:'662757516934',
+      appId:'1:662757516934:web:0042188832f63deb6fd307'
+    };
+    const SNAPSHOT_PATH='studentListManager/v5/snapshot';
+    const PORTAL_SETTINGS_PATH='studentListManager/v5/portalSettings';
+    const EDESIS_URL=document.getElementById('directEdesisLink').href;
+    const DEFAULT_TEMPLATES=Object.freeze({usernameTemplate:'fenomen{no}',passwordTemplate:'00{no}'});
+    // PBKDF2-SHA256 doğrulaması. PIN kaynakta açık metin değildir; kısa PIN için kriptografik güvence sağlamaz.
+    const PIN_SALT='fenomen-portal-v1-login-2026';
+    const PIN_HASH_HEX='28122b93bff31608474e72426ab152dc328ad8931b39acd5de2a9b3989ba5709';
+    const PIN_ITERATIONS=180000;
+    const app=initializeApp(firebaseConfig);
+    const db=getDatabase(app);
+    const $=id=>document.getElementById(id);
+    let templates={...DEFAULT_TEMPLATES};
+    let adminVerified=false;
+    // Tarayıcı tarafında 3 deneme limiti (sayfa yenilense de devam eder).
+    // Bu sınırlama sunucu yetkilendirmesi DEĞİLDİR: depolama temizlenerek atlatılabilir.
+    const PIN_ATTEMPT_LIMIT=3;
+    const PIN_LOCK_MS=60*1000;
+    const PIN_ATTEMPTS_STORAGE_KEY='fenomen_portal_pin_attempts_v1';
+    let attempts=0;
+    let lockedUntil=0;
+    function readPinAttemptState(){
+      try{
+        const stored=JSON.parse(localStorage.getItem(PIN_ATTEMPTS_STORAGE_KEY)||'null');
+        if(stored&&typeof stored==='object'){
+          attempts=Number.isInteger(stored.attempts)?Math.max(0,Math.min(PIN_ATTEMPT_LIMIT,stored.attempts)):0;
+          lockedUntil=Number.isFinite(stored.lockedUntil)?stored.lockedUntil:0;
+        }
+      }catch{/* Depolama engellenirse mevcut sayfa içi sayaç kullanılır. */}
+      if(lockedUntil&&Date.now()>=lockedUntil){attempts=0;lockedUntil=0;writePinAttemptState();}
+    }
+    function writePinAttemptState(){
+      try{localStorage.setItem(PIN_ATTEMPTS_STORAGE_KEY,JSON.stringify({attempts,lockedUntil}));}catch{/* Gizli mod kısıtı */}
+    }
+    function pinLockMessage(){
+      const seconds=Math.max(1,Math.ceil((lockedUntil-Date.now())/1000));
+      return `Üç hatalı giriş yapıldı. ${seconds} saniye sonra yeniden deneyin.`;
+    }
+    readPinAttemptState();
+    let lastFocus=null;
+    let latestStudents=[];
+
+    // Orijinal uygulamanın telefon eşleştirme mantığına uyumlu: +90, 90, 0 ve 5 ile başlayan girişler.
+    function normalizePhone(value){
+      let n=String(value??'').replace(/\D/g,'');
+      if(n.startsWith('0090')&&n.length===14)n=n.slice(4);
+      if(n.startsWith('90')&&n.length===12)n=n.slice(2);
+      if(n.startsWith('0')&&n.length===11)n=n.slice(1);
+      return /^5\d{9}$/.test(n)?n:'';
+    }
+    function normalizeStudentNo(value){return String(value??'').trim().replace(/\s+/g,'');}
+    function recordData(rec){return rec?.data&&typeof rec.data==='object'?rec.data:rec;}
+    function getSnapshotStudents(snapshot){
+      if(!snapshot||typeof snapshot!=='object')return [];
+      // Güncel dosyada recordsList ve records birbirinin kopyasıdır; ikisini birlikte okumak tekrar oluşturur.
+      let records=Array.isArray(snapshot.recordsList)?snapshot.recordsList.filter(Boolean):[];
+      if(!records.length&&snapshot.records&&typeof snapshot.records==='object')records=Object.values(snapshot.records);
+      if(!records.length&&Array.isArray(snapshot.students))records=snapshot.students;
+      const seen=new Set(), out=[];
+      for(const item of records){
+        const d=recordData(item);
+        if(!d||typeof d!=='object')continue;
+        const name=String(d.isim??'').trim();
+        const surname=String(d.soyisim??'').trim();
+        const fullName=!surname||name.toLocaleUpperCase('tr-TR').endsWith(surname.toLocaleUpperCase('tr-TR'))?name:[name,surname].filter(Boolean).join(' ');
+        const st={
+          id:String(item?.id??d.id??'').trim(),
+          name:fullName||'Ad bilgisi yok',
+          className:String(d.sinif??'').trim(),
+          no:normalizeStudentNo(d.okulNo),
+          phone1:normalizePhone(d.veliTelefon),
+          phone2:normalizePhone(d.veli2Telefon)
+        };
+        const key=st.id||[st.no,st.name,st.className].join('|');
+        if(seen.has(key))continue;
+        seen.add(key);out.push(st);
+      }
+      return out;
+    }
+    function findByPhone(all,phone){
+      // Veli1 önce; Veli2'de eşleşen diğer kardeşler de ayrıca eklenir.
+      const seen=new Set(), ordered=[];
+      const add=student=>{const key=student.id||[student.no,student.name,student.className].join('|');if(!seen.has(key)){seen.add(key);ordered.push(student)}};
+      all.filter(s=>s.phone1===phone).forEach(add);
+      all.filter(s=>s.phone2===phone).forEach(add);
+      return ordered;
+    }
+    function generateCredentials(student){
+      if(!/^\d+$/.test(student.no))return null;
+      return {username:templates.usernameTemplate.replaceAll('{no}',student.no),password:templates.passwordTemplate.replaceAll('{no}',student.no)};
+    }
+    function el(tag,className,textContent){
+      const n=document.createElement(tag);
+      if(className)n.className=className;
+      if(textContent!==undefined)n.textContent=textContent;
+      return n;
+    }
+    function displayNotice(id,message){const node=$(id);node.textContent=message;node.hidden=!message;}
+    function resetResult(){ $('results').hidden=true;$('studentList').replaceChildren();displayNotice('lookupError','');displayNotice('lookupStatus','');latestStudents=[]; }
+    function formatInput(value){
+      let d=String(value??'').replace(/\D/g,'');
+      if(d.startsWith('0090')&&d.length>=4)d='0'+d.slice(4);
+      if(d.startsWith('90')&&d.length>=2)d='0'+d.slice(2);
+      if(d[0]==='5')d='0'+d;
+      d=d.slice(0,11);
+      if(!d)return '';
+      return [d.slice(0,4),d.slice(4,7),d.slice(7,9),d.slice(9,11)].filter(Boolean).join(' ');
+    }
+    $('phoneInput').addEventListener('input',e=>{
+      const n=formatInput(e.target.value);
+      if(e.target.value!==n)e.target.value=n;
+      resetResult();
+    });
+    $('lookupForm').addEventListener('submit',async event=>{
+      event.preventDefault();resetResult();
+      const phone=normalizePhone($('phoneInput').value);
+      if(!phone){displayNotice('lookupError','Geçerli bir cep telefonu numarası girin (05XX XXX XX XX).');$('phoneInput').focus();return;}
+      const button=$('lookupBtn');button.disabled=true;button.innerHTML='<span class="spinner" aria-hidden="true"></span> Kayıtlar aranıyor…';
+      displayNotice('lookupStatus','Kayıtlar veritabanından kontrol ediliyor.');
+      try{
+        // Her sorguda güncel yönetici şablonunu da al; başka cihazda yapılan kaydı yansıtır.
+        await loadTemplates();
+        const snap=await get(ref(db,SNAPSHOT_PATH));
+        if(!snap.exists()){
+          displayNotice('lookupStatus','');displayNotice('lookupError','Öğrenci kayıt verisi bulunamadı. Lütfen kurumla iletişime geçin.');return;
+        }
+        const found=findByPhone(getSnapshotStudents(snap.val()),phone);
+        displayNotice('lookupStatus','');
+        if(!found.length){displayNotice('lookupError','Bu telefon numarasına ait kayıt bulunamadı.');return;}
+        latestStudents=found;
+        renderResults(found);
+      }catch(err){
+        console.error('Firebase sorgusu başarısız:',err.code||err.name||'hata');
+        displayNotice('lookupStatus','');displayNotice('lookupError','Veritabanına ulaşılamadı. İnternet bağlantınızı kontrol edip yeniden deneyin.');
+      }finally{button.disabled=false;button.innerHTML='<svg class="btn-main-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Bilgilerimi Getir</span>'; }
+    });
+    function addCredential(parent,label,value){
+      const wrap=el('div','credential');wrap.append(el('span','credential-label',label));
+      const line=el('div','credential-value');line.append(el('strong','',value));
+      const copy=el('button','btn btn-copy','Kopyala');copy.type='button';copy.setAttribute('aria-label',label+' kopyala');
+      copy.addEventListener('click',async()=>{
+        try{await navigator.clipboard.writeText(value)}catch{
+          const input=el('textarea');input.value=value;input.style.cssText='position:fixed;left:-9999px';document.body.append(input);input.select();
+          const success=document.execCommand('copy');input.remove();if(!success){displayNotice('lookupError','Kopyalama yapılamadı. Bilgiyi seçerek kopyalayın.');return;}
+        }
+        copy.textContent='Kopyalandı ✓';setTimeout(()=>{if(copy.isConnected)copy.textContent='Kopyala'},1600);
+      });
+      line.append(copy);wrap.append(line);parent.append(wrap);
+    }
+    function renderResults(students){
+      const list=$('studentList');list.replaceChildren();$('studentCount').textContent=`${students.length} öğrenci`;
+      students.forEach((student)=>{
+        const card=el('article','student-card');
+        const head=el('div','student-head'),avatar=el('div','avatar',(student.name||'Ö').slice(0,1).toLocaleUpperCase('tr-TR'));
+        avatar.setAttribute('aria-hidden','true');const bodyHead=el('div');
+        bodyHead.append(el('div','student-name',student.name));
+        bodyHead.append(el('div','student-info',`Sınıf: ${student.className||'—'}   ·   Öğrenci No: ${student.no||'—'}`));
+        head.append(avatar,bodyHead);card.append(head);
+        const body=el('div','student-content');const cred=generateCredentials(student);
+        if(cred){
+          addCredential(body,'Kullanıcı Adı',cred.username);
+          addCredential(body,'Şifre',cred.password);
+          const link=el('a','btn btn-primary btn-block student-link','Sonuç Belgesine Git ↗');
+          link.href=EDESIS_URL;link.target='_blank';link.rel='noopener noreferrer';body.append(link);
+        }else{
+          body.append(el('div','student-warning','Bu öğrencinin geçerli öğrenci numarası bulunmadığından giriş bilgileri oluşturulamıyor. Lütfen kurumla iletişime geçin.'));
+        }
+        card.append(body);list.append(card);
+      });$('results').hidden=false;
+    }
+    function validateTemplates(config){
+      const u=config?.usernameTemplate,p=config?.passwordTemplate;
+      return typeof u==='string'&&typeof p==='string'&&u.length<=80&&p.length<=80&&u.includes('{no}')&&p.includes('{no}')&&u.trim()&&p.trim();
+    }
+    async function loadTemplates(){
+      try{
+        const result=await get(ref(db,PORTAL_SETTINGS_PATH));
+        if(result.exists()&&validateTemplates(result.val()))templates={usernameTemplate:result.val().usernameTemplate,passwordTemplate:result.val().passwordTemplate};
+      }catch(error){console.warn('Portal ayarları okunamadı; varsayılan şablon kullanılacak.',error.code||'');}
+    }
+    function openAdmin(){
+      lastFocus=document.activeElement;adminVerified=false;readPinAttemptState();showPinScreen();$('adminModal').hidden=false;document.body.style.overflow='hidden';$('pinInput').focus();
+      if(Date.now()<lockedUntil)displayNotice('pinError',pinLockMessage());
+    }
+    function showPinScreen(){
+      $('pinForm').hidden=false;$('adminForm').hidden=true;$('modalTitle').textContent='Yönetici Girişi';$('pinInput').value='';displayNotice('pinError','');
+    }
+    function showSettingsScreen(){
+      $('pinForm').hidden=true;$('adminForm').hidden=false;$('modalTitle').textContent='Giriş Bilgisi Ayarları';
+      $('userTemplate').value=templates.usernameTemplate;$('passTemplate').value=templates.passwordTemplate;
+      displayNotice('saveError','');displayNotice('saveSuccess','');$('userTemplate').focus();
+    }
+    function closeAdmin(){
+      $('adminModal').hidden=true;document.body.style.overflow='';adminVerified=false;showPinScreen();if(lastFocus&&lastFocus.isConnected)lastFocus.focus();
+    }
+    $('adminOpen').addEventListener('click',openAdmin);
+    $('adminClose').addEventListener('click',closeAdmin);
+    document.querySelectorAll('[data-cancel]').forEach(b=>b.addEventListener('click',closeAdmin));
+    $('adminModal').addEventListener('mousedown',e=>{if(e.target===$('adminModal'))closeAdmin()});
+    document.addEventListener('keydown',e=>{
+      if($('adminModal').hidden)return;
+      if(e.key==='Escape')closeAdmin();
+      if(e.key==='Tab'){
+        const focusables=Array.from($('adminModal').querySelectorAll('button:not([hidden]):not(:disabled),input:not([hidden]):not(:disabled)')).filter(n=>n.offsetParent!==null);
+        if(!focusables.length)return;
+        const first=focusables[0],last=focusables[focusables.length-1];
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+      }
+    });
+    async function verifyPin(pin){
+      if(!crypto?.subtle)return false;
+      const enc=new TextEncoder();
+      const material=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']);
+      const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(PIN_SALT),iterations:PIN_ITERATIONS,hash:'SHA-256'},material,256);
+      const digest=Array.from(new Uint8Array(bits),b=>b.toString(16).padStart(2,'0')).join('');
+      return digest===PIN_HASH_HEX;
+    }
+    $('pinForm').addEventListener('submit',async e=>{
+      e.preventDefault();displayNotice('pinError','');
+      readPinAttemptState();
+      if(Date.now()<lockedUntil){displayNotice('pinError',pinLockMessage());$('pinInput').value='';return;}
+      const btn=$('pinSubmit');btn.disabled=true;btn.textContent='Kontrol ediliyor…';
+      try{
+        if(await verifyPin($('pinInput').value)){
+          attempts=0;lockedUntil=0;writePinAttemptState();adminVerified=true;showSettingsScreen();
+        }else{
+          attempts++;
+          if(attempts>=PIN_ATTEMPT_LIMIT){
+            lockedUntil=Date.now()+PIN_LOCK_MS;
+            displayNotice('pinError','Üç hatalı giriş yapıldı. 1 dakika sonra yeniden deneyin.');
+          }else{
+            displayNotice('pinError',`Yönetici PIN kodu hatalı. Kalan giriş hakkı: ${PIN_ATTEMPT_LIMIT-attempts}.`);
+          }
+          writePinAttemptState();
+        }
+      }catch{displayNotice('pinError','Bu tarayıcıda PIN kontrolü kullanılamıyor. Uygulamayı HTTPS üzerinden açın.');}
+      finally{btn.disabled=false;btn.textContent='Giriş Yap';$('pinInput').value='';}
+    });
+    let savingTemplates=false;
+    async function savePortalTemplates(next,isReset=false){
+      if(savingTemplates)return;
+      displayNotice('saveError','');displayNotice('saveSuccess','');
+      if(!adminVerified){showPinScreen();return;}
+      if(!validateTemplates(next)){
+        displayNotice('saveError','Her iki şablon da {no} içermeli ve en fazla 80 karakter olmalıdır.');return;
+      }
+      savingTemplates=true;
+      const saveBtn=$('saveBtn'),resetBtn=$('resetTemplatesBtn');
+      saveBtn.disabled=true;resetBtn.disabled=true;
+      if(isReset)resetBtn.textContent='Başlangıç ayarları kaydediliyor…';
+      else saveBtn.textContent='Kaydediliyor…';
+      try{
+        // Yalnızca portal ayarlarına yazar; öğrenci verilerine ve diğer uygulama ayarlarına dokunmaz.
+        await set(ref(db,PORTAL_SETTINGS_PATH),{...next,version:APP_VERSION,updatedAt:new Date().toISOString()});
+        templates={...next};
+        $('userTemplate').value=next.usernameTemplate;
+        $('passTemplate').value=next.passwordTemplate;
+        displayNotice('saveSuccess',isReset?'Başlangıç ayarları veritabanına kaydedildi.':'Ayarlar veritabanına kaydedildi. Yeni şablonlar artık kullanılıyor.');
+        if(latestStudents.length)renderResults(latestStudents);
+      }catch(err){
+        console.error('Portal ayarları kaydedilemedi:',err.code||'');
+        displayNotice('saveError','Ayarlar veritabanına kaydedilemedi. Erişim izinlerini kontrol edin.');
+      }finally{
+        savingTemplates=false;saveBtn.disabled=false;resetBtn.disabled=false;
+        saveBtn.textContent='Kaydet';resetBtn.textContent='↺ Başlangıç Ayarlarına Dön';
+      }
+    }
+    $('adminForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const next={usernameTemplate:$('userTemplate').value.trim(),passwordTemplate:$('passTemplate').value.trim()};
+      savePortalTemplates(next);
+    });
+    $('resetTemplatesBtn').addEventListener('click',()=>{
+      if(!adminVerified){showPinScreen();return;}
+      if(!confirm('Kullanıcı adı ve şifre şablonları başlangıç değerlerine döndürülsün ve veritabanına kaydedilsin mi?'))return;
+      savePortalTemplates({...DEFAULT_TEMPLATES},true);
+    });
+    loadTemplates();
+  </script>
+</body>
+</html>
